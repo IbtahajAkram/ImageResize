@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer and Cropper</title>
+    <style>
+/* Base styles remain the same */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    width: 955px;
+    height: 498px;
+    position: relative;
+}
+
+.upload-box {
+    position: absolute;
+    margin-left: -732px;
+    margin-top: 22px;
+    width: 416px;
+    height: 406px;
+    border: 2px dashed #e8e8e8;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    margin-right: 33px;
+    background-color: #f8f8f8;
+}
+
+.upload-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.upload-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.content {
+    margin-top: 10px;
+    text-align: center;
+    margin-left: 72px;
+    line-height: 44px;
+    width: 322px;
+    z-index: 6;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.column {
+    flex: 1;
+}
+
+input[type="number"] {
+    width: 100px;
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+#downloadButton {
+    display: none;
+    text-decoration: none;
+    padding: 10px 13px;
+    text-align: center;
+    margin-left: 795px;
+    border-radius: 5px;
+    background-color: #000000;
+    color: white;
+    margin-top: -5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#downloadButton:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+#previewContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.preview-item {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 274px;
+    margin-left: -222px;
+}
+
+.preview-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#portraitButton {
+    padding: 9px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.image-button {
+    display: inline-flex;
+    align-items: center;
+    background-image: url('./portButton.png');
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    position: fixed;
+    font-size: 16px;
+}
+
+.image-button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.image-button:hover {
+    background-color: #35424a;
+    color: #ffffff;
+}
+
+#portraitButton:hover {
+    background-color: #555;
+}
+
+/* Styles for background color options */
+#bgColorSelect {
+    margin-top: 5px;
+}
+
+#fitFillSelect {
+    margin-top: 5px;
+}
+
+.preview-item .remove-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #9894a3;
+    color: white;
+    border: none;
+    padding: 6px 6px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#resultContainer {
+    margin-top: -82px;
+    text-align: center;
+    margin-left: 233px;
+    width: 480px;
+}
+
+#resultImage {
+    height: 49vh;
+    width: 153px;
+    margin-left: 353px;
+    margin-top: -219px;
+    object-fit: contain;
+}
+
+/* Media Queries for Responsiveness */
+
+@media (max-width: 1200px) {
+    .wrapper {
+        width: 90%;
+        height: auto;
+    }
+
+    .upload-box {
+        width: 300px;
+        height: 300px;
+        margin-left: 0;
+        margin-top: 39px;
+    }
+
+    .controls {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    #downloadButton {
+        margin-left: 0;
+    }
+
+    .preview-item {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+    }
+
+    .upload-box {
+        width: 100%;
+        height: auto;
+        margin-left: 0;
+    }
+
+    .controls {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .content {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    #resultContainer {
+        margin-left: 0;
+    }
+
+    #resultImage {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .image-button {
+        font-size: 14px;
+    }
+
+    button {
+        padding: 8px 16px;
+    }
+
+    input[type="number"] {
+        width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    body{
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+    .wrapper {
+        padding: 9px;
+        margin-left: 12px;
+        /* overflow: hidden; */
+        margin-top: 33px;
+    }
+.column{
+    margin-top: 33px;
+}
+    .upload-box { 
+        width: 100%;
+        height: auto;
+        margin-left: 29%;
+    }
+
+    .controls {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 194px;
+    }
+
+    .content {
+        width: 100%;
+    }
+.size-button{
+    margin-left: -117px;
+}
+    #downloadButton {
+        margin-left: 0;
+    }
+
+    .preview-item {
+        width: 100px;
+        height: 100px;
+        margin-top: 10px;
+        margin-left: 0;
+    }
+
+    #resultImage {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .image-button {
+        font-size: 12px;
+        /* margin-left: -44px; */
+    }
+    #portraitButton{
+        margin-left: -82px;
+    }
+.portimg{
+    margin-left: -233px;
+}
+#landscapeButton{
+    margin-left:41px;
+}
+#fullHDButton{
+    margin-left: 42px;
+
+    /* width: 33px; */
+
+}
+ button {
+        padding: 6px 12px;
+        margin-left: -14px;
+        /* height: 12vh; */
+    }
+    button img{
+        width: 142px;
+        /* height: 9vh; */
+    }
+#fullHDButton{
+    padding: 10px;
+    /* margin-top: 12px; */
+    position: absolute;
+}
+
+.storB{
+    margin-top: -33px;
+
+    
+}
+.bgcoloee{
+    margin-left: -64px;
+    /* position: inherit; */
+}
+.whiB{
+width: 37px;
+}
+#or{
+    /* margin-left: -166px; */
+    /* position: relative; */
+   
+}
+.widtCol{
+    margin-top: 33px;
+    position: absolute;
+}
+.layoutH{
+    margin-left: -62px;
+}
+#downloadBtn{
+    margin-left: -43px;
+    
+}
+.customH{
+    margin-left: -54px;
+}
+.blaB{
+width: 37px;
+}
+.layportion{
+    margin-left: -59px;
+}
+.bgColH{
+    margin-left: -60px;
+}
+label{
+    margin-top: 22px;
+}
+    input[type="number"] {
+        width: 60px;
+        margin-left: -55px;
+        margin-top: 22px;
+    }
+}
+
+.lblH{
+    margin-top: -23px;
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    <div id="resize-tool">
+
+    
+    <div class="wrapper">
+        <div class="upload-box" id="uploadSection">
+            <input type="file" id="uploadInput" accept="image/*" style="display: none;">
+            <img id="uploadedImage" alt="Upload Image" style="display: none;">
+           <div id="uploadText">
+            <span><img height="45vh" style="margin-left: 133px;" width="45vh" src="https://cdn-icons-png.flaticon.com/128/1092/1092216.png" alt=""></span>
+            <p style="color: #8f8c8c;"><b>Click to upload </b> or drag and drop an image<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(PNG, JPG, JPEG, HEIC)</p>
+        </div>
+        </div>
+        <div style="margin-left: 222px;" class="controls">
+            <h3 class="customH">Custom Resize</h3>
+            <div id="widtCol" style="margin-top: 26px;" class="column width">
+                <label>Width: <br></label>
+                <input style="padding: 7px 8px;" type="number" id="widthInput" placeholder="0" min="0"> px
+            </div>
+            <div style="margin-left: 204px; margin-top: -54px;" class="column height">
+                <label class="lblH">Height: <br></label>
+                <input class="inH" type="number" id="heightInput" placeholder="0" min="0"> px
+            </div>
+            <br>
+            
+            <b id="or" style="margin-left: 172px;margin-top: -2px;">(or)</b>
+            <div class="portimg" style="margin-left: -8px; margin-top: 22px;">
+                <button style="width: 118px; height: 10.5vh; background-color: transparent;" class="size-button" data-width="640" data-height="480" id="portraitButton"><img style="height: 10vh; margin-left: -17px; margin-top: -7px; border-radius: 5px;" src="https://imageresizeronline.netlify.app/portButton.png" alt="Button Image"></button>
+                <button style="width: 118px; height: 10.5vh; background-color: transparent;" class="size-button" data-width="1280" data-height="720" id="landscapeButton"><img style="height: 10vh; margin-left: -17px; margin-top: -7px; border-radius: 5px;" src="https://imageresizeronline.netlify.app/landscape%20utton.png" alt="Button Image"></button>
+                <button style="width: 113px; height: 10.5vh; background-color: #e0e0ed;" class="size-button" data-width="1920" data-height="1080" id="fullHDButton"><img class="storB" style="height: 10vh; margin-left: -17px; margin-top: -7px; border-radius: 5px;" src="https://imageresizeronline.netlify.app/story%20button.png" alt="Button Image"></button>
+            </div>
+            <h3 class="layoutH">Layout</h3>
+            <div class="layportion">
+                <label>
+                    <input type="radio" name="layout" value="fit" id="fitLayout" checked><img style="width: 172px; cursor: pointer; margin-left: -33px; height: 10vh;" src="https://imageresizeronline.netlify.app/fit%20button.png" alt="" id="fitImage">
+                    <!-- <input type="radio" name="layout" value="fit" id="fitLayout" checked><img style="width: 172px; cursor: pointer; margin-left: -33px; height: 10vh;" src="./fit button.png" alt="" id="fitImage"> -->
+                </label>
+                <!-- <img style="width: 202px; height: 9vh; border-top-right-radius: 333px;" src="./fillll.png" alt="" id="fillImage"> -->
+                <label><input type="radio" name="layout" value="fill" id="fillLayout"><img style="width: 202px; cursor: pointer; height: 9vh; margin-left: -18px; border-top-right-radius: 333px;" src="https://imageresizeronline.netlify.app/fillll.png" alt="" id="fillImage"></label>
+                <!-- <label><input type="radio" name="layout" value="fill" id="fillLayout"><img style="width: 202px; cursor: pointer; height: 9vh; margin-left: -18px; border-top-right-radius: 333px;" src="./fillll.png" alt="" id="fillImage"></label> -->
+    
+                <!-- <img style="width: 172px; height: 10vh;" src="./fit button.png" alt="" id="fitImage"> -->
+                <!-- <img style="width: 202px; height: 9vh; border-top-right-radius: 333px;" src="./fillll.png" alt="" id="fillImage"> -->
+            </div>
+            <h3 class="bgColH">Background Color</h3>
+            <div class="bgcoloee">
+                <label  style="width: 13px;"><input type="radio" name="background" value="white" id="whiteBackground" checked> 
+                <button class="whiB" style="border-radius: 17%; margin-left: -3px; background-color: white; border: 1px solid rgb(134, 134, 134); height: 39px; "></button>
+                </label>
+                <label><input type="radio" name="background" value="black" id="blackBackground">
+                    <button class="blaB" style="border-radius: 17%; margin-left:-2px; background-color: rgb(0, 0, 0); border: 0.4px solid rgb(182, 181, 181); height: 39px; "></button>
+                
+                </label>
+                <label><input style="display: none;" type="radio" name="background" value="transparent" id="transparentBackground"></label>
+            </div>
+            <button style="padding: 12px 28px; margin-top: 14px;" id="downloadBtn">Download</button>
+        </div>
+    </div>
+</div>
+    <script>
+     document.addEventListener('DOMContentLoaded', () => {
+    const uploadSection = document.getElementById('uploadSection');
+    const uploadInput = document.getElementById('uploadInput');
+    const uploadedImage = document.getElementById('uploadedImage');
+    const widthInput = document.getElementById('widthInput');
+    const heightInput = document.getElementById('heightInput');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const uploadText = document.getElementById('uploadText');
+    let currentImage;
+
+    // Handle file upload
+    uploadSection.addEventListener('click', () => {
+        uploadInput.click();
+    });
+
+    uploadInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImage.src = e.target.result;
+                uploadedImage.style.display = 'block';
+                currentImage = new Image();
+                uploadText.style.display = 'none'; // Hide upload text
+                currentImage.src = e.target.result;
+                
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle size buttons
+    document.querySelectorAll('.size-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const width = button.getAttribute('data-width');
+            const height = button.getAttribute('data-height');
+            widthInput.value = width;
+            heightInput.value = height;
+        });
+    });
+
+    // Handle layout radio buttons
+    document.querySelectorAll('input[name="layout"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('img[id$="Image"]').forEach(img => img.classList.remove('active'));
+            const layout = document.querySelector('input[name="layout"]:checked').value;
+            if (layout === 'fit') {
+                document.getElementById('fitImage').classList.add('active');
+            } else {
+                document.getElementById('fillImage').classList.add('active');
+            }
+        });
+    });
+
+    // Handle background color radio buttons
+    document.querySelectorAll('input[name="background"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('label').forEach(label => label.classList.remove('active'));
+            document.querySelector(`input[name="background"]:checked`).parentElement.classList.add('active');
+        });
+    });
+
+    // Handle download button
+    downloadBtn.addEventListener('click', () => {
+        if (currentImage) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = parseInt(widthInput.value) || currentImage.width;
+            const height = parseInt(heightInput.value) || currentImage.height;
+            const layout = document.querySelector('input[name="layout"]:checked').value;
+            const backgroundColor = document.querySelector('input[name="background"]:checked').value;
+
+            canvas.width = width;
+            canvas.height = height;
+
+            // Apply background color
+            if (backgroundColor === 'white') {
+                ctx.fillStyle = '#ffffff';
+            } else if (backgroundColor === 'black') {
+                ctx.fillStyle = '#000000';
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Transparent
+            }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the image with the selected layout
+            if (layout === 'fit') {
+                const scaleFactor = Math.min(canvas.width / currentImage.width, canvas.height / currentImage.height);
+                const x = (canvas.width - currentImage.width * scaleFactor) / 2;
+                const y = (canvas.height - currentImage.height * scaleFactor) / 2;
+                ctx.drawImage(currentImage, x, y, currentImage.width * scaleFactor, currentImage.height * scaleFactor);
+            } else {
+                ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+            }
+
+            // Trigger download
+            const link = document.createElement('a');
+            link.download = 'resized-image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            location.reload();
+        }
+    });
+});
+
+    </script>
+</body>
+</html> 
+
